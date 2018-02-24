@@ -1,0 +1,20 @@
+{
+
+  "manifest_version": 2,
+  "name": "Messenger save",
+  "version": "1.0",
+
+  "description": "Pozwala stawiać pineski przy ważnych wiadomościach",
+
+  "icons": {
+    "48": "icons/icn.png"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://*.facebook.com/*"],
+      "js": ["save.js"]
+    }
+  ]
+
+}
