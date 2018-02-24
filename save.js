@@ -17,7 +17,7 @@ var option_span = option_spans_array[OPTION_SPAN_INDEX];
 var option_button = document.createElement("button");
 option_button.innerText="Pineska";
 option_button.onclick = function(){
-    console.log("chuj");
+
     document.body.appendChild(main_div);
 
     var exit_button = document.getElementById(EXIT_SHOW_BOX_BUTTON_ID);
@@ -27,6 +27,34 @@ option_button.onclick = function(){
 
     var text_div = document.getElementById(SHOW_BOX_TEXT_DIV_ID);
     text_div.innerText= "bla bla blaq";
+    loadPinsArray(text_div);
+    
+    
+}
+
+function generatePinsList(pinArray,text_div){
+    for(var i=0; i<pinArray.length; i++){
+        var pin = pinArray[i];
+        var pinButton = document.createElement("button");
+        pinButton.innerText = i + " pin";
+        pinButton.onclick = function(){
+            url = window.location.href + "?q=" + pin.value;
+            window.location.href = url;
+        };
+        text_div.appendChild(pinButton);
+    }
+}
+
+function loadPinsArray(text_div){
+    let gettingItem = browser.storage.local.get();
+
+    let onGotArray = function(receivedItem){
+        let pinArray = receivedItem.array;
+        generatePinsList(pinArray,text_div);
+
+    };
+    gettingItem.then(onGotArray, onError);
+
 }
 
 option_span.appendChild(option_button);
@@ -37,7 +65,7 @@ main_div.innerHTML = SHOW_BOX;
 
 var elements = document.getElementsByClassName(DIV_CLASS_NAME);
 
-
+//ZMIENIĆ ŻEBY SPRAWDZAĆ CZY JUŻ COŚ JEST !!!
 var messagesArray = {"array":[]};
 browser.storage.local.set(messagesArray); //set empty array to local storage
 
@@ -80,7 +108,7 @@ for(let i=0; i<elements.length; i++)
 function addItemToLocalStorage(item){
 
     let onGotArray = function(recivedArray){
-        console.log(recivedArray.array);
+        //console.log(recivedArray.array);
         recivedArray.array.push(item);
         browser.storage.local.set(recivedArray);
     }
