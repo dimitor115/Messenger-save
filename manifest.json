@@ -5,7 +5,7 @@
   "version": "1.0",
 
   "description": "Pozwala stawiać pineski przy ważnych wiadomościach",
-
+  "permissions": ["storage"],
   "icons": {
     "48": "icons/icn.png"
   },
