@@ -13,10 +13,11 @@ const SHOW_BOX = '<div class="_3ixn"></div><div class="_59s7" role="dialog" aria
 const SAVED_PINS_BUTTON_STYLES = 'width:100%; background-color: #ECEFF1;border: none;color: black;padding: 10px 32px;text-left: center;text-decoration: none;font-size: 14px;cursor: pointer;'
 const ADD_PIN_BUTTON_STYLES = 'background-color: #ECEFF1; border-radius: 5px; border: 1px;'
 
-//main_div is div with whole show box elements. Show box contains all saved pins
-let main_div = document.createElement("div");
-main_div.setAttribute("class",MAIN_WINDOW_DIV_CLASS);
-main_div.innerHTML = SHOW_BOX;
+
+
+
+
+//--- saved pins button ---
 
 let specific_class_spans_array = document.getElementsByClassName(OPTION_SPAN_CLASS);
 let option_span = specific_class_spans_array[OPTION_SPAN_INDEX];
@@ -24,13 +25,24 @@ let option_span = specific_class_spans_array[OPTION_SPAN_INDEX];
 let option_button = document.createElement("button");
 option_button.innerHTML = 'Zapisane pineski';
 option_button.style = SAVED_PINS_BUTTON_STYLES;
-option_button.onclick = function(){
+
+
+//-- show box --
+
+//main_div is div with whole show box elements. Show box contains all saved pins
+let main_div = document.createElement("div");
+main_div.setAttribute("class",MAIN_WINDOW_DIV_CLASS);
+main_div.innerHTML = SHOW_BOX;
+
+
+option_button.onclick = function(){ //show box content
 
     document.body.appendChild(main_div);
 
+    //close show box
     var exit_button = document.getElementById(EXIT_SHOW_BOX_BUTTON_ID);
     exit_button.onclick = function(){
-        document.body.removeChild(main_div); //close show box
+        document.body.removeChild(main_div); 
     }
 
     let text_div = document.getElementById(SHOW_BOX_TEXT_DIV_ID);
@@ -57,6 +69,7 @@ function generatePinsList(pinArray,text_div){
 
     for(var i=0; i<pinArray.length; i++){
         const LI_ID = "messenger-save-li-" +i;
+        
         let pin = pinArray[i];
         let pinButton = document.createElement("button");
 
@@ -77,8 +90,6 @@ function generatePinsList(pinArray,text_div){
     
             let li_to_remove = document.getElementById(LI_ID);
             text_div.removeChild(li_to_remove);
-            console.log("do usuniecia");
-            console.log(li_to_remove);
             deleteItemFromLocalStore(pin);
         }
         
@@ -102,21 +113,16 @@ if(specific_class_spans_array.length>0)
 var messagesArray = {"array":[]};
 browser.storage.local.set(messagesArray); //set empty array to local storage
 
-function onGot(item) {
 
-  }
-  
-function onError(error) {
-    console.log(`Error: ${error}`);
-  }
+
+// ---- Adding add pin button to button options -----
+
+//opakować to w jakąś funckję !
 
 let messages_dives = document.getElementsByClassName(DIV_CLASS_NAME);
 let messages_option_spans = document.getElementsByClassName("_2u_d");
 let whole_messages_dives = document.getElementsByClassName("clearfix _o46 _3erg");//there are the dives that contains message div and message option div ect
 
-let up_menus = document.getElementsByClassName("_hw3");
-
-var global =false;
 for(let i=0; i<messages_dives.length; i++)
 {   
     
@@ -124,11 +130,10 @@ for(let i=0; i<messages_dives.length; i++)
     let messages_option_span = messages_option_spans[i];
     let whole_message_div = whole_messages_dives[i];
 
-    let up_menu = up_menus[0];
-
     let message_span = message_div.getElementsByClassName(SPAN_CLASS_NAME);
     
 
+    // --- add button ----
     let button = document.createElement("button");
     button.innerText = 'save';
     button.style = ADD_PIN_BUTTON_STYLES;
@@ -142,7 +147,7 @@ for(let i=0; i<messages_dives.length; i++)
         gettingItem.then(onGot, onError);
     }
 
-
+    //adding and deleting add button to option span 
     whole_message_div.onmouseover = function(){
 
         messages_option_span.insertAdjacentElement('afterbegin',button); 
@@ -156,6 +161,8 @@ for(let i=0; i<messages_dives.length; i++)
       
 }
 
+//trzeba napisać funckcję flitrującą tylko pineski z jednej konwersacji!!!
+
 function deleteItemFromLocalStore(item)
 {
     let onGotArray = function(received_object){
@@ -163,15 +170,12 @@ function deleteItemFromLocalStore(item)
         for(let i=0; i<received_object.array.length; i++)
         {   
             let array_item = received_object.array[i];
-            if(item.value !== array_item.value)
+            if(item.value !== array_item.value) //trzeba jakieś trochę jeszcze lepsze porównywanie obiektów np. data
             {
                 updated_array.push(array_item);
-            }else{
-                console.log("mam");
             }
         }
         received_object.array = updated_array;
-        //console.log(received_object.array);
         browser.storage.local.set(received_object);
     }
 
@@ -181,16 +185,24 @@ function deleteItemFromLocalStore(item)
 
 function addItemToLocalStorage(item){
 
-    let onGotArray = function(recivedArray){
-        //console.log(recivedArray.array);
-        recivedArray.array.push(item);
-        browser.storage.local.set(recivedArray);
+    //trza dodać sprawdzanie czy taki element już istnieje !
+    let onGotArray = function(received_array){
+        received_array.array.push(item);
+        browser.storage.local.set(received_array);
     }
 
     let gettingItem = browser.storage.local.get();
     gettingItem.then(onGotArray, onError);
 
     
+}
+
+function onGot(item) {
+    //tu coś było xd
+}
+
+function onError(error) {
+  console.log(`Error: ${error}`);
 }
 
 
