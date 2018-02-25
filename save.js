@@ -53,8 +53,8 @@ function generatePinsList(pinArray,text_div){
 
     for(var i=0; i<pinArray.length; i++){
         const LI_ID = "messenger-save-li-" +i;
-        var pin = pinArray[i];
-        var pinButton = document.createElement("button");
+        let pin = pinArray[i];
+        let pinButton = document.createElement("button");
 
         pinButton.innerText = i + " " + pin.value.substr(0,100);
 
@@ -69,14 +69,12 @@ function generatePinsList(pinArray,text_div){
 
         let delete_button = document.createElement("button");
         delete_button.innerText = "usuń";
-        delete_button.value = LI_ID;
         delete_button.onclick = function(){
-            
-            //zawsze usuwa ostatni bo li_elment na koniec wskazuje na ostani !
-            let li_to_remove = document.getElementById(this.value);
+    
+            let li_to_remove = document.getElementById(LI_ID);
             text_div.removeChild(li_to_remove);
             console.log("do usuniecia");
-            console.log(pin);
+            console.log(li_to_remove);
             deleteItemFromLocalStore(pin);
         }
         
