@@ -113,7 +113,7 @@ let whole_messages_dives = document.getElementsByClassName("clearfix _o46 _3erg"
 
 let up_menus = document.getElementsByClassName("_hw3");
 
-
+var global =false;
 for(let i=0; i<messages_dives.length; i++)
 {   
     
@@ -127,7 +127,8 @@ for(let i=0; i<messages_dives.length; i++)
     
 
     let button = document.createElement("button");
-    button.innerText="koko";
+    //button.className = "_5zvq";
+    button.innerText = "dodaj";
     button.setAttribute("value",message_span[0].innerText) //sets the value of the button to the message content
     button.onclick = function(){
             
@@ -145,12 +146,21 @@ for(let i=0; i<messages_dives.length; i++)
     //clearfix _o46 _3erg _3i_m _nd_ direction_ltr text_align_ltr
     //clearfix _o46 _3erg _29_7 direction_ltr text_align_ltr
 
+    //TEST
+        // button.onmouseover = function(){global=true;}
+        // button.onmouseout = function(){global = false;}
+        //button.style = "pointer-events: none;";
+    //TEST
+
     whole_message_div.onmouseover = function(){
         //up_menu.appendChild(button);
-        messages_option_span.insertAdjacentElement('afterbegin',button);
+        console.log("add!");
+        messages_option_span.insertAdjacentElement('afterbegin',button); 
     }
 
-    whole_message_div.onmouseout = function(){
+    whole_message_div.onmouseleave = function(){
+        console.log("remove!");
+  
         messages_option_span.removeChild(button);
     }
     
