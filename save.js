@@ -1,4 +1,3 @@
-document.body.style.border = "5px solid red";
 
 const DIV_CLASS_NAME = "_aok";
 const SPAN_CLASS_NAME = "_3oh- _58nk";
@@ -11,6 +10,9 @@ const EXIT_SHOW_BOX_BUTTON_ID = 'messenger-save-exit';
 const SHOW_BOX_WIDTH = "700";
 const SHOW_BOX = '<div class="_3ixn"></div><div class="_59s7" role="dialog" aria-label="Zawartość okna dialogowego" style="width: '+SHOW_BOX_WIDTH+'px; margin-top: 197px;"><div class="_4t2a"><div><div><div><div class="_4eby _2c9g"><h2 class="_4ebz">Zapisane pineski</h2><div id='+SHOW_BOX_TEXT_DIV_ID+' ></div><div class="_4eb-"></div><div class="_4eb_"><div class="clearfix"><div class="_ohe lfloat"><div class="_2_d1"></div></div><div class="_ohf rfloat"><div><span class="_30vt"><button id='+EXIT_SHOW_BOX_BUTTON_ID+' class="_3quh _30yy _2u0 _5ixy layerCancel">Anuluj</button></span></div></div></div></div></div></div></div></div></div></div>';
 
+const SAVED_PINS_BUTTON_STYLES = 'width:100%; background-color: #ECEFF1;border: none;color: black;padding: 10px 32px;text-left: center;text-decoration: none;font-size: 14px;cursor: pointer;'
+const ADD_PIN_BUTTON_STYLES = 'background-color: #ECEFF1; border-radius: 5px; border: 1px;'
+
 //main_div is div with whole show box elements. Show box contains all saved pins
 let main_div = document.createElement("div");
 main_div.setAttribute("class",MAIN_WINDOW_DIV_CLASS);
@@ -20,7 +22,8 @@ let specific_class_spans_array = document.getElementsByClassName(OPTION_SPAN_CLA
 let option_span = specific_class_spans_array[OPTION_SPAN_INDEX];
 
 let option_button = document.createElement("button");
-option_button.innerText="Zapisane pineski";
+option_button.innerHTML = 'Zapisane pineski';
+option_button.style = SAVED_PINS_BUTTON_STYLES;
 option_button.onclick = function(){
 
     document.body.appendChild(main_div);
@@ -127,40 +130,26 @@ for(let i=0; i<messages_dives.length; i++)
     
 
     let button = document.createElement("button");
-    //button.className = "_5zvq";
-    button.innerText = "dodaj";
+    button.innerText = 'save';
+    button.style = ADD_PIN_BUTTON_STYLES;
     button.setAttribute("value",message_span[0].innerText) //sets the value of the button to the message content
     button.onclick = function(){
             
-        //console.log(this.value);
         let messageObject = { "value": this.value, "date":10 };
         addItemToLocalStorage(messageObject);
 
-
         let gettingItem = browser.storage.local.get();
         gettingItem.then(onGot, onError);
-
-        // url = window.location.href + "?q=" + this.value;
-        // window.location.href = url;
     }
-    //clearfix _o46 _3erg _3i_m _nd_ direction_ltr text_align_ltr
-    //clearfix _o46 _3erg _29_7 direction_ltr text_align_ltr
 
-    //TEST
-        // button.onmouseover = function(){global=true;}
-        // button.onmouseout = function(){global = false;}
-        //button.style = "pointer-events: none;";
-    //TEST
 
     whole_message_div.onmouseover = function(){
-        //up_menu.appendChild(button);
-        console.log("add!");
+
         messages_option_span.insertAdjacentElement('afterbegin',button); 
     }
 
     whole_message_div.onmouseleave = function(){
-        console.log("remove!");
-  
+
         messages_option_span.removeChild(button);
     }
     
