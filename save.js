@@ -8,7 +8,8 @@ const MAIN_WINDOW_DIV_CLASS = "_10 _4ebx _-lj uiLayer _4-hy _3qw";
 
 const SHOW_BOX_TEXT_DIV_ID ="messenger-save-pins-list"
 const EXIT_SHOW_BOX_BUTTON_ID = 'messenger-save-exit';
-const SHOW_BOX = '<div class="_3ixn"></div><div class="_59s7" role="dialog" aria-label="Zawartość okna dialogowego" style="width: 554px; margin-top: 197px;"><div class="_4t2a"><div><div><div><div class="_4eby _2c9g"><h2 class="_4ebz">Zapisane pineski</h2><div id='+SHOW_BOX_TEXT_DIV_ID+' ></div><div class="_4eb-"></div><div class="_4eb_"><div class="clearfix"><div class="_ohe lfloat"><div class="_2_d1"></div></div><div class="_ohf rfloat"><div><span class="_30vt"><button id='+EXIT_SHOW_BOX_BUTTON_ID+' class="_3quh _30yy _2u0 _5ixy layerCancel">Anuluj</button></span></div></div></div></div></div></div></div></div></div></div>';
+const SHOW_BOX_WIDTH = "700";
+const SHOW_BOX = '<div class="_3ixn"></div><div class="_59s7" role="dialog" aria-label="Zawartość okna dialogowego" style="width: '+SHOW_BOX_WIDTH+'px; margin-top: 197px;"><div class="_4t2a"><div><div><div><div class="_4eby _2c9g"><h2 class="_4ebz">Zapisane pineski</h2><div id='+SHOW_BOX_TEXT_DIV_ID+' ></div><div class="_4eb-"></div><div class="_4eb_"><div class="clearfix"><div class="_ohe lfloat"><div class="_2_d1"></div></div><div class="_ohf rfloat"><div><span class="_30vt"><button id='+EXIT_SHOW_BOX_BUTTON_ID+' class="_3quh _30yy _2u0 _5ixy layerCancel">Anuluj</button></span></div></div></div></div></div></div></div></div></div></div>';
 
 //main_div is div with whole show box elements. Show box contains all saved pins
 let main_div = document.createElement("div");
@@ -92,13 +93,11 @@ if(specific_class_spans_array.length>0)
 
 
 
-var elements = document.getElementsByClassName(DIV_CLASS_NAME);
+
 
 //ZMIENIĆ ŻEBY SPRAWDZAĆ CZY JUŻ COŚ JEST !!!
 var messagesArray = {"array":[]};
 browser.storage.local.set(messagesArray); //set empty array to local storage
-
-console.log(elements.length);
 
 function onGot(item) {
 
@@ -108,19 +107,27 @@ function onError(error) {
     console.log(`Error: ${error}`);
   }
 
-for(let i=0; i<elements.length; i++)
+let messages_dives = document.getElementsByClassName(DIV_CLASS_NAME);
+let messages_option_spans = document.getElementsByClassName("_2u_d");
+let whole_messages_dives = document.getElementsByClassName("clearfix _o46 _3erg");//there are the dives that contains message div and message option div ect
+
+for(let i=0; i<messages_dives.length; i++)
 {   
-    var element = elements[i]; //get one div from all div with the same class name
+    
+    let message_div = messages_dives[i]; //get one div from all div with the same class name
+    let messages_option_span = messages_option_spans[i];
+    let whole_message_div = whole_messages_dives[i];
 
-    var span = element.getElementsByClassName(SPAN_CLASS_NAME);
+    let message_span = message_div.getElementsByClassName(SPAN_CLASS_NAME);
+    
 
-    var button = document.createElement("button");
+    let button = document.createElement("button");
     button.innerText="koko";
-    button.setAttribute("value",span[0].innerText) //sets the value of the button to the message content
+    button.setAttribute("value",message_span[0].innerText) //sets the value of the button to the message content
     button.onclick = function(){
             
         //console.log(this.value);
-        var messageObject = { "value": this.value, "date":10 };
+        let messageObject = { "value": this.value, "date":10 };
         addItemToLocalStorage(messageObject);
 
 
@@ -130,7 +137,17 @@ for(let i=0; i<elements.length; i++)
         // url = window.location.href + "?q=" + this.value;
         // window.location.href = url;
     }
-    element.appendChild(button);
+    //clearfix _o46 _3erg _3i_m _nd_ direction_ltr text_align_ltr
+    //clearfix _o46 _3erg _29_7 direction_ltr text_align_ltr
+
+    whole_message_div.onmouseover = function(){
+        messages_option_span.appendChild(button);
+    }
+
+    whole_message_div.onmouseout = function(){
+        messages_option_span.removeChild(button);
+    }
+    
       
 }
 
