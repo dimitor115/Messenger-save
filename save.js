@@ -111,12 +111,17 @@ let messages_dives = document.getElementsByClassName(DIV_CLASS_NAME);
 let messages_option_spans = document.getElementsByClassName("_2u_d");
 let whole_messages_dives = document.getElementsByClassName("clearfix _o46 _3erg");//there are the dives that contains message div and message option div ect
 
+let up_menus = document.getElementsByClassName("_hw3");
+
+
 for(let i=0; i<messages_dives.length; i++)
 {   
     
     let message_div = messages_dives[i]; //get one div from all div with the same class name
     let messages_option_span = messages_option_spans[i];
     let whole_message_div = whole_messages_dives[i];
+
+    let up_menu = up_menus[0];
 
     let message_span = message_div.getElementsByClassName(SPAN_CLASS_NAME);
     
@@ -141,7 +146,8 @@ for(let i=0; i<messages_dives.length; i++)
     //clearfix _o46 _3erg _29_7 direction_ltr text_align_ltr
 
     whole_message_div.onmouseover = function(){
-        messages_option_span.appendChild(button);
+        //up_menu.appendChild(button);
+        messages_option_span.insertAdjacentElement('afterbegin',button);
     }
 
     whole_message_div.onmouseout = function(){
