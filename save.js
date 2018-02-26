@@ -16,12 +16,13 @@ const ADD_PIN_BUTTON_STYLES = 'background-color: #ECEFF1; border-radius: 5px; bo
 
 //---global---
 var current_conversation_id =null;
+var number_of_messages_dives = 0;
 
 start();    
 
 function start()
 {
-    
+    prepareLocalStorage();   
 
     let update_current_conversation_id = function(){
         let url = window.location.href;
@@ -37,9 +38,16 @@ function start()
         
     }
  
-    setInterval(function(){ 
-        if(update_current_conversation_id())
-            console.log(current_conversation_id);
+    setInterval(function(){
+        
+        let messages_dives = document.getElementsByClassName(DIV_CLASS_NAME);
+        
+        if(update_current_conversation_id() || messages_dives.length != number_of_messages_dives)
+            {
+                addSaveButtonToAllMessages(messages_dives);
+                number_of_messages_dives = messages_dives.length;
+            }
+
          }, 1000);
 }
 
@@ -142,58 +150,63 @@ if(specific_class_spans_array.length>0)
     option_span.appendChild(option_button);
 
 
-prepareLocalStorage();
+
 
 
 // ---- Adding add pin button to button options -----
-
-//opakować to w jakąś funckję !
-
-let messages_dives = document.getElementsByClassName(DIV_CLASS_NAME);
-let messages_option_spans = document.getElementsByClassName("_2u_d");
-let whole_messages_dives = document.getElementsByClassName("clearfix _o46 _3erg");//there are the dives that contains message div and message option div ect
-
-for(let i=0; i<messages_dives.length; i++)
-{   
+function addSaveButtonToAllMessages(messages_dives)
+{
     
-    let message_div = messages_dives[i]; //get one div from all div with the same class name
-    let messages_option_span = messages_option_spans[i];
-    let whole_message_div = whole_messages_dives[i];
+    let whole_messages_dives = document.getElementsByClassName("clearfix _o46 _3erg");//there are the dives that contains message div and message option div ect
+    let messages_option_spans = document.getElementsByClassName("_2u_d");
 
-    let message_span = message_div.getElementsByClassName(SPAN_CLASS_NAME);
-    
-    if(message_span.length>0)
-    {
-        // --- add button ----
-        let button = document.createElement("button");
-        button.innerText = 'save';
-        button.style = ADD_PIN_BUTTON_STYLES;
-        button.setAttribute("value",message_span[0].innerText) //sets the value of the button to the message content
-        button.onclick = function(){
-                
-            let messageObject = { "value": this.value, "date":10, "conversation_id":current_conversation_id };
-            addItemToLocalStorage(messageObject);
 
-            let gettingItem = browser.storage.local.get();
-            gettingItem.then(onGot, onError);
+    for(let i=0; i<messages_dives.length; i++)
+    {   
+        
+        let message_div = messages_dives[i]; //get one div from all div with the same class name
+        let messages_option_span = messages_option_spans[i];
+        let whole_message_div = whole_messages_dives[i];
+
+        let message_span = message_div.getElementsByClassName(SPAN_CLASS_NAME);
+        
+        if(message_span.length>0)
+        {
+            // --- add button ----
+            
+            let message_text = message_span[0].innerText;
+            let button = document.createElement("button");
+            button.innerText = 'save';
+            button.style = ADD_PIN_BUTTON_STYLES;
+            button.setAttribute("value",message_text) //sets the value of the button to the message content
+            button.onclick = function(){
+                    
+                let messageObject = { "value": this.value, "date":10, "conversation_id":current_conversation_id };
+                addItemToLocalStorage(messageObject);
+
+                let gettingItem = browser.storage.local.get();
+                gettingItem.then(onGot, onError);
+            }
+
+            //adding and deleting add button to option span 
+            whole_message_div.onmouseover = function(){
+
+                messages_option_span.insertAdjacentElement('afterbegin',button); 
+            }
+
+            whole_message_div.onmouseleave = function(){
+
+                messages_option_span.removeChild(button);
+            }
         }
-
-        //adding and deleting add button to option span 
-        whole_message_div.onmouseover = function(){
-
-            messages_option_span.insertAdjacentElement('afterbegin',button); 
-        }
-
-        whole_message_div.onmouseleave = function(){
-
-            messages_option_span.removeChild(button);
-        }
-    }
 
     
     
       
 }
+}
+
+
 
 function getItemsFromLocalStorageById()
 {
@@ -213,15 +226,13 @@ function prepareLocalStorage(){
 
         }else{
             let messages_array  = {"array":[]};
-            browser.storage.local.set(messagesArray);
+            browser.storage.local.set(messages_array);
         }
     }
 
     let gettingItem = browser.storage.local.get();
     gettingItem.then(onGotArray, onError);
 }
-
-//trzeba napisać funckcję flitrującą tylko pineski z jednej konwersacji!!!
 
 function deleteItemFromLocalStore(item)
 {
