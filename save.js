@@ -78,15 +78,24 @@ option_button.onclick = function(){ //show box content
     let ul_element = document.createElement("ul");
     text_div.appendChild(ul_element);
 
-    loadPinsArray(ul_element);
+    loadPinsArrayByCurrentId(ul_element);
     
 }
 
-function loadPinsArray(text_div){
+function loadPinsArrayByCurrentId(text_div){
     let gettingItem = browser.storage.local.get();
 
-    let onGotArray = function(receivedItem){
-        let pinArray = receivedItem.array;
+    let onGotArray = function(received_object){
+        let pinArray = [];
+        let received_array = received_object.array;
+
+        for(let i=0; i<received_array.length; i++)
+        {
+            let received_item = received_array[i];
+            if(received_item.conversation_id === current_conversation_id)
+                pinArray.push(received_item);
+        }
+
         generatePinsList(pinArray,text_div);
     };
     gettingItem.then(onGotArray, onError);
@@ -162,7 +171,7 @@ for(let i=0; i<messages_dives.length; i++)
         button.setAttribute("value",message_span[0].innerText) //sets the value of the button to the message content
         button.onclick = function(){
                 
-            let messageObject = { "value": this.value, "date":10 };
+            let messageObject = { "value": this.value, "date":10, "conversation_id":current_conversation_id };
             addItemToLocalStorage(messageObject);
 
             let gettingItem = browser.storage.local.get();
@@ -184,6 +193,16 @@ for(let i=0; i<messages_dives.length; i++)
     
     
       
+}
+
+function getItemsFromLocalStorageById()
+{
+      let onGotArray = function(received_object){
+        
+        }
+
+    let gettingItem = browser.storage.local.get();
+    gettingItem.then(onGotArray, onError);
 }
 
 function prepareLocalStorage(){
