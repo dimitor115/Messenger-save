@@ -132,31 +132,35 @@ for(let i=0; i<messages_dives.length; i++)
 
     let message_span = message_div.getElementsByClassName(SPAN_CLASS_NAME);
     
+    if(message_span.length>0)
+    {
+        // --- add button ----
+        let button = document.createElement("button");
+        button.innerText = 'save';
+        button.style = ADD_PIN_BUTTON_STYLES;
+        button.setAttribute("value",message_span[0].innerText) //sets the value of the button to the message content
+        button.onclick = function(){
+                
+            let messageObject = { "value": this.value, "date":10 };
+            addItemToLocalStorage(messageObject);
 
-    // --- add button ----
-    let button = document.createElement("button");
-    button.innerText = 'save';
-    button.style = ADD_PIN_BUTTON_STYLES;
-    button.setAttribute("value",message_span[0].innerText) //sets the value of the button to the message content
-    button.onclick = function(){
-            
-        let messageObject = { "value": this.value, "date":10 };
-        addItemToLocalStorage(messageObject);
+            let gettingItem = browser.storage.local.get();
+            gettingItem.then(onGot, onError);
+        }
 
-        let gettingItem = browser.storage.local.get();
-        gettingItem.then(onGot, onError);
+        //adding and deleting add button to option span 
+        whole_message_div.onmouseover = function(){
+
+            messages_option_span.insertAdjacentElement('afterbegin',button); 
+        }
+
+        whole_message_div.onmouseleave = function(){
+
+            messages_option_span.removeChild(button);
+        }
     }
 
-    //adding and deleting add button to option span 
-    whole_message_div.onmouseover = function(){
-
-        messages_option_span.insertAdjacentElement('afterbegin',button); 
-    }
-
-    whole_message_div.onmouseleave = function(){
-
-        messages_option_span.removeChild(button);
-    }
+    
     
       
 }
