@@ -1,4 +1,5 @@
 
+
 const DIV_CLASS_NAME = "_aok";
 const SPAN_CLASS_NAME = "_3oh- _58nk";
 const OPTION_SPAN_CLASS = "_mh6";
@@ -13,8 +14,34 @@ const SHOW_BOX = '<div class="_3ixn"></div><div class="_59s7" role="dialog" aria
 const SAVED_PINS_BUTTON_STYLES = 'width:100%; background-color: #ECEFF1;border: none;color: black;padding: 10px 32px;text-left: center;text-decoration: none;font-size: 14px;cursor: pointer;'
 const ADD_PIN_BUTTON_STYLES = 'background-color: #ECEFF1; border-radius: 5px; border: 1px;'
 
+//---global---
+var current_conversation_id =null;
 
+start();    
 
+function start()
+{
+    
+
+    let update_current_conversation_id = function(){
+        let url = window.location.href;
+        let conversation_id_start_index = url.indexOf('/t/') + 3;
+        let conversation_id = url.substr(conversation_id_start_index);
+
+        if(current_conversation_id !== conversation_id)
+        {
+            current_conversation_id = conversation_id;
+            return true;
+        }else
+            return false;
+        
+    }
+ 
+    setInterval(function(){ 
+        if(update_current_conversation_id())
+            console.log(current_conversation_id);
+         }, 1000);
+}
 
 
 //--- saved pins button ---
