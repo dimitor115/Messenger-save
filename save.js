@@ -106,13 +106,7 @@ if(specific_class_spans_array.length>0)
     option_span.appendChild(option_button);
 
 
-
-
-
-//ZMIENIĆ ŻEBY SPRAWDZAĆ CZY JUŻ COŚ JEST !!!
-var messagesArray = {"array":[]};
-browser.storage.local.set(messagesArray); //set empty array to local storage
-
+prepareLocalStorage();
 
 
 // ---- Adding add pin button to button options -----
@@ -163,6 +157,22 @@ for(let i=0; i<messages_dives.length; i++)
     
     
       
+}
+
+function prepareLocalStorage(){
+    let onGotArray = function(received_object){
+        if(received_object.hasOwnProperty('array'))
+        {
+            console.log(received_object.array.length);
+
+        }else{
+            let messages_array  = {"array":[]};
+            browser.storage.local.set(messagesArray);
+        }
+    }
+
+    let gettingItem = browser.storage.local.get();
+    gettingItem.then(onGotArray, onError);
 }
 
 //trzeba napisać funckcję flitrującą tylko pineski z jednej konwersacji!!!
