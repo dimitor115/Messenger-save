@@ -46,23 +46,30 @@ function start()
             return false;
         
     }
- 
-    setInterval(function(){
 
-
+    let check_and_render_saved_pins_button = function(){
         let specific_class_spans_array = document.getElementsByClassName(OPTION_SPAN_CLASS);
         if(specific_class_spans_array.length>0 && !was_pins_saved_button_added)
         {
             was_pins_saved_button_added = true;
             addPinsSavedButtonToRightBar(specific_class_spans_array);
         }
-        
+    }
+
+    let check_and_render_add_pin_buttons = function(){
         let messages_dives = document.getElementsByClassName(WHOLE_MESSAGE_DIV_CLASS); 
         if(update_current_conversation_id() || messages_dives.length != number_of_messages_dives)
             {
                 addSaveButtonToAllMessages(messages_dives);
                 number_of_messages_dives = messages_dives.length;
             }
+    }
+ 
+    setInterval(function(){
+
+        check_and_render_saved_pins_button();
+        check_and_render_add_pin_buttons();
+        
 
          }, 1000);
 }
@@ -163,10 +170,6 @@ function generatePinsList(pinArray,text_div){
 
 
 
-
-
-
-
 // ---- Adding add pin button to button options -----
 function addSaveButtonToAllMessages(whole_messages_dives)
 {
@@ -215,7 +218,6 @@ function addSaveButtonToAllMessages(whole_messages_dives)
         }
     }
 }
-
 
 
 function getItemsFromLocalStorageById()
