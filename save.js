@@ -1,10 +1,13 @@
 
 
-const DIV_CLASS_NAME = "_aok";
+const MESSAGE_DIV_CLASS_NAME = "_aok";
 const SPAN_CLASS_NAME = "_3oh- _58nk";
 const OPTION_SPAN_CLASS = "_mh6";
 const OPTION_SPAN_INDEX = 1;
 const MAIN_WINDOW_DIV_CLASS = "_10 _4ebx _-lj uiLayer _4-hy _3qw";
+
+const WHOLE_MESSAGE_DIV_CLASS = 'clearfix _o46 _3erg'; //there are the dives that contains message div and message option div ect
+const MESSAGE_OPTION_SPAN_CLASS = '_2u_d';
 
 const SHOW_BOX_TEXT_DIV_ID ="messenger-save-pins-list"
 const EXIT_SHOW_BOX_BUTTON_ID = 'messenger-save-exit';
@@ -40,7 +43,7 @@ function start()
  
     setInterval(function(){
         
-        let messages_dives = document.getElementsByClassName(DIV_CLASS_NAME);
+        let messages_dives = document.getElementsByClassName(WHOLE_MESSAGE_DIV_CLASS); 
         
         if(update_current_conversation_id() || messages_dives.length != number_of_messages_dives)
             {
@@ -154,56 +157,52 @@ if(specific_class_spans_array.length>0)
 
 
 // ---- Adding add pin button to button options -----
-function addSaveButtonToAllMessages(messages_dives)
+function addSaveButtonToAllMessages(whole_messages_dives)
 {
-    
-    let whole_messages_dives = document.getElementsByClassName("clearfix _o46 _3erg");//there are the dives that contains message div and message option div ect
-    let messages_option_spans = document.getElementsByClassName("_2u_d");
+    let messages_option_spans = document.getElementsByClassName(MESSAGE_OPTION_SPAN_CLASS);
 
-
-    for(let i=0; i<messages_dives.length; i++)
+    for(let i=0; i<whole_messages_dives.length; i++)
     {   
-        
-        let message_div = messages_dives[i]; //get one div from all div with the same class name
-        let messages_option_span = messages_option_spans[i];
         let whole_message_div = whole_messages_dives[i];
+        let messages_option_span = messages_option_spans[i];
+        let message_dives = whole_message_div.getElementsByClassName(MESSAGE_DIV_CLASS_NAME);
 
-        let message_span = message_div.getElementsByClassName(SPAN_CLASS_NAME);
-        
-        if(message_span.length>0)
+        if(message_dives.length>0)//so only if there is text message, no gif, picture or sth
         {
-            // --- add button ----
+            let message_div = message_dives[0];
+            let message_span = message_div.getElementsByClassName(SPAN_CLASS_NAME);
             
-            let message_text = message_span[0].innerText;
-            let button = document.createElement("button");
-            button.innerText = 'save';
-            button.style = ADD_PIN_BUTTON_STYLES;
-            button.setAttribute("value",message_text) //sets the value of the button to the message content
-            button.onclick = function(){
+            if(message_span.length>0)//that prevent from only emoji message
+            {
+                let message_text = message_span[0].innerText;
+
+                let button = document.createElement("button");
+                button.innerText = 'save';
+                button.style = ADD_PIN_BUTTON_STYLES;
+                button.setAttribute("value",message_text) //sets the value of the button to the message content
+                button.onclick = function(){
+                        
+                    let messageObject = { "value": this.value, "date":10, "conversation_id":current_conversation_id };
+                    addItemToLocalStorage(messageObject);
+
+                    let gettingItem = browser.storage.local.get();
+                    gettingItem.then(onGot, onError);
+                }
+
+                //adding and deleting add button to option span 
+                whole_message_div.onmouseover = function(){
                     
-                let messageObject = { "value": this.value, "date":10, "conversation_id":current_conversation_id };
-                addItemToLocalStorage(messageObject);
+                    messages_option_span.insertAdjacentElement('afterbegin',button); 
+                }
 
-                let gettingItem = browser.storage.local.get();
-                gettingItem.then(onGot, onError);
+                whole_message_div.onmouseleave = function(){
+                
+                    messages_option_span.removeChild(button);
+                } 
             }
-
-            //adding and deleting add button to option span 
-            whole_message_div.onmouseover = function(){
-
-                messages_option_span.insertAdjacentElement('afterbegin',button); 
-            }
-
-            whole_message_div.onmouseleave = function(){
-
-                messages_option_span.removeChild(button);
-            }
+            
         }
-
-    
-    
-      
-}
+    }
 }
 
 
