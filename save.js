@@ -34,6 +34,7 @@ function start()
 
         if(current_conversation_id !== conversation_id)
         {
+            console.log(conversation_id);
             current_conversation_id = conversation_id;
             return true;
         }else
@@ -255,10 +256,27 @@ function deleteItemFromLocalStore(item)
 
 function addItemToLocalStorage(item){
 
-    //trza dodać sprawdzanie czy taki element już istnieje !
-    let onGotArray = function(received_array){
-        received_array.array.push(item);
-        browser.storage.local.set(received_array);
+    let existInArray = function(item,array){
+        for(let i=0; i<array.length; i++)
+        {
+            let array_item = array[i];
+            if(item.value === array_item.value && item.conversation_id === array_item.conversation_id)
+                return true;
+        }
+
+        return false;
+    }
+    
+    let onGotArray = function(received_object){
+        received_array = received_object.array;
+
+        if(!existInArray(item,received_array))
+        {
+            received_array.push(item);
+            browser.storage.local.set(received_object);
+        }else{
+            console.log("already exist");
+        }
     }
 
     let gettingItem = browser.storage.local.get();
