@@ -21,10 +21,15 @@ const ADD_PIN_BUTTON_STYLES = 'background-color: #ECEFF1; border-radius: 5px; bo
 var current_conversation_id =null;
 var number_of_messages_dives = 0;
 
-start();    
+start();
+
+//TYMCZASOWO!!!!
+
 
 function start()
 {
+    let was_pins_saved_button_added = false;
+
     prepareLocalStorage();   
 
     let update_current_conversation_id = function(){
@@ -43,9 +48,16 @@ function start()
     }
  
     setInterval(function(){
+
+
+        let specific_class_spans_array = document.getElementsByClassName(OPTION_SPAN_CLASS);
+        if(specific_class_spans_array.length>0 && !was_pins_saved_button_added)
+        {
+            was_pins_saved_button_added = true;
+            addPinsSavedButtonToRightBar(specific_class_spans_array);
+        }
         
         let messages_dives = document.getElementsByClassName(WHOLE_MESSAGE_DIV_CLASS); 
-        
         if(update_current_conversation_id() || messages_dives.length != number_of_messages_dives)
             {
                 addSaveButtonToAllMessages(messages_dives);
@@ -56,43 +68,45 @@ function start()
 }
 
 
-//--- saved pins button ---
+//--- saved pins button ---    
 
-let specific_class_spans_array = document.getElementsByClassName(OPTION_SPAN_CLASS);
-let option_span = specific_class_spans_array[OPTION_SPAN_INDEX];
+function addPinsSavedButtonToRightBar(specific_class_spans_array)
+{
+    let option_span = specific_class_spans_array[OPTION_SPAN_INDEX];
+    let option_button = document.createElement("button");
+    option_button.innerHTML = 'Zapisane pineski';
+    option_button.style = SAVED_PINS_BUTTON_STYLES;
 
-let option_button = document.createElement("button");
-option_button.innerHTML = 'Zapisane pineski';
-option_button.style = SAVED_PINS_BUTTON_STYLES;
+    option_span.appendChild(option_button);
+
+    //main_div is div with whole show box elements. Show box contains all saved pins
+    let main_div = document.createElement("div");
+    main_div.setAttribute("class",MAIN_WINDOW_DIV_CLASS);
+    main_div.innerHTML = SHOW_BOX;
 
 
-//-- show box --
+    option_button.onclick = function(){ //show box content
 
-//main_div is div with whole show box elements. Show box contains all saved pins
-let main_div = document.createElement("div");
-main_div.setAttribute("class",MAIN_WINDOW_DIV_CLASS);
-main_div.innerHTML = SHOW_BOX;
+        document.body.appendChild(main_div);
 
+        //close show box
+        var exit_button = document.getElementById(EXIT_SHOW_BOX_BUTTON_ID);
+        exit_button.onclick = function(){
+            document.body.removeChild(main_div); 
+        }
 
-option_button.onclick = function(){ //show box content
+        let text_div = document.getElementById(SHOW_BOX_TEXT_DIV_ID);
+        text_div.innerHTML = "";
 
-    document.body.appendChild(main_div);
+        let ul_element = document.createElement("ul");
+        text_div.appendChild(ul_element);
 
-    //close show box
-    var exit_button = document.getElementById(EXIT_SHOW_BOX_BUTTON_ID);
-    exit_button.onclick = function(){
-        document.body.removeChild(main_div); 
+        loadPinsArrayByCurrentId(ul_element);
+        
     }
 
-    let text_div = document.getElementById(SHOW_BOX_TEXT_DIV_ID);
-    text_div.innerHTML = "";
-
-    let ul_element = document.createElement("ul");
-    text_div.appendChild(ul_element);
-
-    loadPinsArrayByCurrentId(ul_element);
-    
 }
+
 
 function loadPinsArrayByCurrentId(text_div){
     let gettingItem = browser.storage.local.get();
@@ -148,10 +162,6 @@ function generatePinsList(pinArray,text_div){
 }
 
 
-
-//TYMCZASOWO!!!!
-if(specific_class_spans_array.length>0)
-    option_span.appendChild(option_button);
 
 
 
