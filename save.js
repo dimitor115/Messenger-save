@@ -14,7 +14,7 @@ const EXIT_SHOW_BOX_BUTTON_ID = 'messenger-save-exit';
 const SHOW_BOX_WIDTH = "700";
 const SHOW_BOX = '<div class="_3ixn"></div><div class="_59s7" role="dialog" aria-label="Zawartość okna dialogowego" style="width: '+SHOW_BOX_WIDTH+'px; margin-top: 197px;"><div class="_4t2a"><div><div><div><div class="_4eby _2c9g"><h2 class="_4ebz">Zapisane pineski</h2><div id='+SHOW_BOX_TEXT_DIV_ID+' ></div><div class="_4eb-"></div><div class="_4eb_"><div class="clearfix"><div class="_ohe lfloat"><div class="_2_d1"></div></div><div class="_ohf rfloat"><div><span class="_30vt"><button id='+EXIT_SHOW_BOX_BUTTON_ID+' class="_3quh _30yy _2u0 _5ixy layerCancel">Anuluj</button></span></div></div></div></div></div></div></div></div></div></div>';
 
-const SAVED_PINS_BUTTON_STYLES = 'width:100%; background-color: #ECEFF1;border: none;color: black;padding: 10px 32px;text-left: center;text-decoration: none;font-size: 14px;cursor: pointer;'
+
 const ADD_PIN_BUTTON_STYLES = 'background-color: #ECEFF1; border-radius: 5px; border: 1px;'
 
 //---global---
@@ -80,8 +80,9 @@ function start()
 function addPinsSavedButtonToRightBar(specific_class_spans_array)
 {
     let option_span = specific_class_spans_array[OPTION_SPAN_INDEX];
-    let option_button = document.createElement("button");
-    option_button.innerHTML = 'Zapisane pineski';
+    let option_button = document.createElement("div");
+    option_button.role = "button";
+    option_button.innerHTML = `<div style = "${SAVED_PINS_BUTTON_PIN_STYLE}"> ${SAVED_PINS_BUTTON_HTML}</div> <div style="${SAVED_PINS_BUTTON_TEXT_STYLE}"> Zapisane pineski </div>`;
     option_button.style = SAVED_PINS_BUTTON_STYLES;
 
     option_span.appendChild(option_button);
@@ -140,8 +141,10 @@ function generatePinsList(pinArray,text_div){
         const LI_ID = "messenger-save-li-" +i;
         
         let pin = pinArray[i];
-        let pinButton = document.createElement("button");
-
+        if(pin.hasOwnProperty('value') && pin.value!== undefined)
+        {
+            let pinButton = document.createElement("button");
+        
         pinButton.innerText = i + " " + pin.value.substr(0,100);
 
         pinButton.onclick = function(){
@@ -165,6 +168,8 @@ function generatePinsList(pinArray,text_div){
         li_element.appendChild(delete_button);
 
         text_div.appendChild(li_element);
+        }
+        
     }
 }
 
@@ -190,13 +195,14 @@ function addSaveButtonToAllMessages(whole_messages_dives)
             {
                 let message_text = message_span[0].innerText;
 
-                let button = document.createElement("button");
-                button.innerText = 'save';
-                button.style = ADD_PIN_BUTTON_STYLES;
+                let button = document.createElement("span");
+                button.role="button";
+                button.innerHTML = SAVE_MESSAGE_BUTTON_HTML;
+                //button.style = ADD_PIN_BUTTON_STYLES;
                 button.setAttribute("value",message_text) //sets the value of the button to the message content
                 button.onclick = function(){
-                        
-                    let messageObject = { "value": this.value, "date":10, "conversation_id":current_conversation_id };
+                    console.log(message_text);
+                    let messageObject = { "value": message_text, "date":10, "conversation_id":current_conversation_id };
                     addItemToLocalStorage(messageObject);
 
                     let gettingItem = browser.storage.local.get();

@@ -13,7 +13,7 @@
   "content_scripts": [
     {
       "matches": ["*://*.facebook.com/*"],
-      "js": ["save.js"]
+      "js": ["html_content.js","save.js"]
     }
   ]
 
