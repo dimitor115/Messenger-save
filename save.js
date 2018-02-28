@@ -53,7 +53,7 @@ function start()
         if(specific_class_spans_array.length>0 && !was_pins_saved_button_added)
         {
             was_pins_saved_button_added = true;
-            updateConversationColor();
+            
             addPinsSavedButtonToRightBar(specific_class_spans_array);
             
         }
@@ -64,6 +64,8 @@ function start()
         let messages_dives = document.getElementsByClassName(WHOLE_MESSAGE_DIV_CLASS); 
         if(update_current_conversation_id() || messages_dives.length != number_of_messages_dives)
             {
+                updateConversationColor();
+                renderPinInSavedPinsButton();
                 addSaveButtonToAllMessages(messages_dives);
                 number_of_messages_dives = messages_dives.length;
             }
@@ -75,7 +77,7 @@ function start()
         check_and_render_add_pin_buttons();
         
 
-         }, 1000);
+         }, 500);
 }
 
 function updateConversationColor()
@@ -97,10 +99,18 @@ function updateConversationColor()
 
 //--- saved pins button ---    
 
+function renderPinInSavedPinsButton(){
+
+    let option_button = document.getElementById(SAVED_PINS_BUTTON_ID);
+    option_button.innerHTML = `<div style = "${SAVED_PINS_BUTTON_PIN_STYLE}"> ${SAVED_PINS_BUTTON_HTML()}</div> <div style="${SAVED_PINS_BUTTON_TEXT_STYLE}"> Zapisane pineski </div>`;
+    
+}
+
 function addPinsSavedButtonToRightBar(specific_class_spans_array)
 {
     let option_span = specific_class_spans_array[OPTION_SPAN_INDEX];
     let option_button = document.createElement("div");
+    option_button.id = SAVED_PINS_BUTTON_ID;
     option_button.role = "button";
     option_button.innerHTML = `<div style = "${SAVED_PINS_BUTTON_PIN_STYLE}"> ${SAVED_PINS_BUTTON_HTML()}</div> <div style="${SAVED_PINS_BUTTON_TEXT_STYLE}"> Zapisane pineski </div>`;
     option_button.style = SAVED_PINS_BUTTON_STYLES;
