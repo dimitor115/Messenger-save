@@ -28,6 +28,7 @@ start();
 
 function start()
 {
+    
     let was_pins_saved_button_added = false;
 
     prepareLocalStorage();   
@@ -52,9 +53,12 @@ function start()
         if(specific_class_spans_array.length>0 && !was_pins_saved_button_added)
         {
             was_pins_saved_button_added = true;
+            updateConversationColor();
             addPinsSavedButtonToRightBar(specific_class_spans_array);
+            
         }
     }
+
 
     let check_and_render_add_pin_buttons = function(){
         let messages_dives = document.getElementsByClassName(WHOLE_MESSAGE_DIV_CLASS); 
@@ -74,6 +78,22 @@ function start()
          }, 1000);
 }
 
+function updateConversationColor()
+{
+    const RIGHT_ICONS_CLASS_NAME = "_5odt";
+
+    let right_icons_dives = document.getElementsByClassName(RIGHT_ICONS_CLASS_NAME);
+    let icon_div = right_icons_dives[0];
+    let svg_element = icon_div.childNodes[0];
+    let circle_element = svg_element.childNodes[1]; // because at 0 index is title tag
+    console.log(circle_element);
+    let conversation_color = circle_element.getAttribute("stroke");
+    SAVED_PINS_BUTTON_PIN_SVG_COLOR = conversation_color;
+    SAVE_MESSAGES_BUTTON_PIN_SVG_COLOR = conversation_color;
+
+    console.log(`Conversation color : ${conversation_color}`);
+}
+
 
 //--- saved pins button ---    
 
@@ -82,7 +102,7 @@ function addPinsSavedButtonToRightBar(specific_class_spans_array)
     let option_span = specific_class_spans_array[OPTION_SPAN_INDEX];
     let option_button = document.createElement("div");
     option_button.role = "button";
-    option_button.innerHTML = `<div style = "${SAVED_PINS_BUTTON_PIN_STYLE}"> ${SAVED_PINS_BUTTON_HTML}</div> <div style="${SAVED_PINS_BUTTON_TEXT_STYLE}"> Zapisane pineski </div>`;
+    option_button.innerHTML = `<div style = "${SAVED_PINS_BUTTON_PIN_STYLE}"> ${SAVED_PINS_BUTTON_HTML()}</div> <div style="${SAVED_PINS_BUTTON_TEXT_STYLE}"> Zapisane pineski </div>`;
     option_button.style = SAVED_PINS_BUTTON_STYLES;
 
     option_span.appendChild(option_button);
@@ -197,7 +217,7 @@ function addSaveButtonToAllMessages(whole_messages_dives)
 
                 let button = document.createElement("span");
                 button.role="button";
-                button.innerHTML = SAVE_MESSAGE_BUTTON_HTML;
+                button.innerHTML = SAVE_MESSAGE_BUTTON_HTML();
                 //button.style = ADD_PIN_BUTTON_STYLES;
                 button.setAttribute("value",message_text) //sets the value of the button to the message content
                 button.onclick = function(){
