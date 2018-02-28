@@ -102,7 +102,8 @@ function updateConversationColor()
 function renderPinInSavedPinsButton(){
 
     let option_button = document.getElementById(SAVED_PINS_BUTTON_ID);
-    option_button.innerHTML = `<div style = "${SAVED_PINS_BUTTON_PIN_STYLE}"> ${SAVED_PINS_BUTTON_HTML()}</div> <div style="${SAVED_PINS_BUTTON_TEXT_STYLE}"> Zapisane pineski </div>`;
+    if(option_button!==undefined && option_button!==null)
+        option_button.innerHTML = `<div style = "${SAVED_PINS_BUTTON_PIN_STYLE}"> ${SAVED_PINS_BUTTON_HTML()}</div> <div style="${SAVED_PINS_BUTTON_TEXT_STYLE}"> Zapisane pineski </div>`;
     
 }
 
@@ -204,10 +205,12 @@ function generatePinsList(pinArray,text_div){
 }
 
 
-
 // ---- Adding add pin button to button options -----
 function addSaveButtonToAllMessages(whole_messages_dives)
 {
+    getMessageDate();
+    let whole_messages_box_dives = document.getElementsByClassName("_1t_p clearfix");
+    console.log(`${whole_messages_dives.length} : ${whole_messages_box_dives.length}`)
     let messages_option_spans = document.getElementsByClassName(MESSAGE_OPTION_SPAN_CLASS);
 
     for(let i=0; i<whole_messages_dives.length; i++)
@@ -255,6 +258,14 @@ function addSaveButtonToAllMessages(whole_messages_dives)
     }
 }
 
+
+function getMessageDate(whole_message_div){
+    
+    let temp = document.getElementsByClassName("js_2");
+    console.log(temp);
+}
+
+// ------ MEMORY ------- !
 
 function getItemsFromLocalStorageById()
 {
