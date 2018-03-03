@@ -187,7 +187,7 @@ function generatePinsList(pinArray,text_div){
             };
 
             let li_element = document.createElement("li");
-            li_element.style = `margin: 0 0 3px 0;`;
+            li_element.style = `margin: 10px 0 0px 0;`;
             li_element.setAttribute("id", LI_ID);
             li_element.appendChild(pinButton);
 
