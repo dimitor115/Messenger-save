@@ -174,32 +174,37 @@ function generatePinsList(pinArray,text_div){
         let pin = pinArray[i];
         if(pin.hasOwnProperty('value') && pin.value!== undefined)
         {
-            let pinButton = document.createElement("button");
+            let pinButton = document.createElement("span");
+            pinButton.role = "button";
+
+            let message_text = i + " " + pin.value.substr(0,70);
+            pinButton.innerHTML = message_text;
+            pinButton.style = SAVED_MESSAGES_STYLE;
+
+            pinButton.onclick = function(){
+                url = window.location.href + "?q=" + pin.value;
+                window.location.href = url;
+            };
+
+            let li_element = document.createElement("li");
+            li_element.style = `margin: 0 0 3px 0;`;
+            li_element.setAttribute("id", LI_ID);
+            li_element.appendChild(pinButton);
+
+            let delete_button = document.createElement("span");
+            delete_button.role = "button";
+            delete_button.innerHTML = DELETE_SAVED_MESSAGE_HTML();
+            delete_button.onclick = function(){
         
-        pinButton.innerText = i + " " + pin.value.substr(0,100);
+                let li_to_remove = document.getElementById(LI_ID);
+                text_div.removeChild(li_to_remove);
+                deleteItemFromLocalStore(pin);
+            }
+            
+            li_element.appendChild(delete_button);
 
-        pinButton.onclick = function(){
-            url = window.location.href + "?q=" + pin.value;
-            window.location.href = url;
-        };
-
-        let li_element = document.createElement("li");
-        li_element.setAttribute("id", LI_ID);
-        li_element.appendChild(pinButton);
-
-        let delete_button = document.createElement("button");
-        delete_button.innerText = "usuń";
-        delete_button.onclick = function(){
-    
-            let li_to_remove = document.getElementById(LI_ID);
-            text_div.removeChild(li_to_remove);
-            deleteItemFromLocalStore(pin);
-        }
-        
-        li_element.appendChild(delete_button);
-
-        text_div.appendChild(li_element);
-        }
+            text_div.appendChild(li_element);
+            }
         
     }
 }
