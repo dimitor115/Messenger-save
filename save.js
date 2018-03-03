@@ -20,6 +20,7 @@ const ADD_PIN_BUTTON_STYLES = 'background-color: #ECEFF1; border-radius: 5px; bo
 //---global---
 var current_conversation_id =null;
 var number_of_messages_dives = 0;
+var was_message_options_render = false;
 
 start();
 
@@ -62,7 +63,7 @@ function start()
 
     let check_and_render_add_pin_buttons = function(){
         let messages_dives = document.getElementsByClassName(WHOLE_MESSAGE_DIV_CLASS); 
-        if(update_current_conversation_id() || messages_dives.length != number_of_messages_dives)
+        if(update_current_conversation_id() || messages_dives.length != number_of_messages_dives && !was_message_options_render)
             {
                 updateConversationColor();
                 renderPinInSavedPinsButton();
@@ -99,7 +100,7 @@ function updateConversationColor()
 
 //--- saved pins button ---    
 
-function renderPinInSavedPinsButton(){
+function renderPinInSavedPinsButton(){ //use to render pin every time when conversation color changes
 
     let option_button = document.getElementById(SAVED_PINS_BUTTON_ID);
     if(option_button!==undefined && option_button!==null)
@@ -249,12 +250,13 @@ function addSaveButtonToAllMessages(whole_messages_dives)
 
                 //adding and deleting add button to option span 
                 whole_message_div.onmouseover = function(){
-                    
+                    was_message_options_render = true;
                     messages_option_span.insertAdjacentElement('afterbegin',button); 
                 }
 
                 whole_message_div.onmouseleave = function(){
-                
+                    
+                    was_message_options_render = false;
                     messages_option_span.removeChild(button);
                 } 
             }
