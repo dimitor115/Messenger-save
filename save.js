@@ -86,15 +86,19 @@ function updateConversationColor()
     const RIGHT_ICONS_CLASS_NAME = "_5odt";
 
     let right_icons_dives = document.getElementsByClassName(RIGHT_ICONS_CLASS_NAME);
-    let icon_div = right_icons_dives[0];
-    let svg_element = icon_div.childNodes[0];
-    let circle_element = svg_element.childNodes[1]; // because at 0 index is title tag
-    console.log(circle_element);
-    let conversation_color = circle_element.getAttribute("stroke");
-    SAVED_PINS_BUTTON_PIN_SVG_COLOR = conversation_color;
-    SAVE_MESSAGES_BUTTON_PIN_SVG_COLOR = conversation_color;
+    if(right_icons_dives.length>0)
+    {
+        let icon_div = right_icons_dives[0];
+        let svg_element = icon_div.childNodes[0];
+        let circle_element = svg_element.childNodes[1]; // because at 0 index is title tag
+        console.log(circle_element);
+        let conversation_color = circle_element.getAttribute("stroke");
+        SAVED_PINS_BUTTON_PIN_SVG_COLOR = conversation_color;
+        SAVE_MESSAGES_BUTTON_PIN_SVG_COLOR = conversation_color;
 
-    console.log(`Conversation color : ${conversation_color}`);
+        console.log(`Conversation color : ${conversation_color}`);
+    }
+    
 }
 
 
@@ -244,8 +248,8 @@ function addSaveButtonToAllMessages(whole_messages_dives)
                     let messageObject = { "value": message_text, "date":10, "conversation_id":current_conversation_id };
                     addItemToLocalStorage(messageObject);
 
-                    let gettingItem = browser.storage.local.get();
-                    gettingItem.then(onGot, onError);
+                    // let gettingItem = browser.storage.local.get();
+                    // gettingItem.then(onGot, onError);
                 }
 
                 //adding and deleting add button to option span 
@@ -319,6 +323,7 @@ function deleteItemFromLocalStore(item)
     let gettingItem = browser.storage.local.get();
     gettingItem.then(onGotArray, onError);
 }
+
 
 function addItemToLocalStorage(item){
 
