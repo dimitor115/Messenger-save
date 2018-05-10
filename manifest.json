@@ -12,7 +12,7 @@
 
   "content_scripts": [
     {
-      "matches": ["*://*.facebook.com/messages/*"],
+      "matches": ["*://*.facebook.com/messages/*", "*://*.messenger.com/*"],
       "js": ["html_content.js","save.js"]
     }
   ]
