@@ -84,15 +84,15 @@ function updateConversationColor()
     const RIGHT_ICONS_CLASS_NAME = "_5odt"
 
     let right_icons_dives = document.getElementsByClassName(RIGHT_ICONS_CLASS_NAME)
+    console.log(right_icons_dives)
     if(right_icons_dives.length>0){
 
-        let icon_div = right_icons_dives[0]
-        let svg_element = icon_div.childNodes[0]
+        let svg_element = right_icons_dives[0].childNodes[0]
         let circle_element = svg_element.childNodes[1] // because at 0 index is title tag
         
         console.log(circle_element)
 
-        let conversation_color = circle_element.getAttribute("stroke")
+        let conversation_color = circle_element.getAttribute("fill")
         SAVED_PINS_BUTTON_PIN_SVG_COLOR = conversation_color
         SAVE_MESSAGES_BUTTON_PIN_SVG_COLOR = conversation_color
 
