@@ -9,7 +9,7 @@ margin: 1px 0;
 padding: 6px 12px;
 text-align: left;
 font-size: 14px;
-background-color: rgba(0, 132, 255, .2);
+background-color: #f1f0f0;
 `;
 
 const SAVED_PINS_BUTTON_STYLES = `

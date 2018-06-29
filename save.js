@@ -188,7 +188,7 @@ function generatePinsList(pinArray,text_div){
             const pinButton = document.createElement("span")
             pinButton.role = "button"
 
-            const message_text = i + " " + pin.value.substr(0,70) //TODO : move message length to constant
+            const message_text = pin.value.substr(0,70) //TODO : move message length to constant
             pinButton.innerHTML = message_text
             pinButton.style = SAVED_MESSAGES_STYLE
 
@@ -199,7 +199,7 @@ function generatePinsList(pinArray,text_div){
             }
 
             const li_element = document.createElement("li")
-            li_element.style = `margin: 10px 0 0px 0;`
+            li_element.style = `margin: 10px 0 0px 0; padding-bottom:5px`
             li_element.setAttribute("id", LI_ID)
             li_element.appendChild(pinButton)
 
