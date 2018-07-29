@@ -304,6 +304,7 @@ function saveThisMessage(message_object)
 {
     if(existInSavedMessages(message_object))
     {
+        saved_messages_list = removeFromMessagesArray(saved_messages_list,message_object)
         deleteItemFromLocalStore(message_object)
     }else{
         addItemToLocalStorage(message_object)
@@ -363,16 +364,9 @@ function prepareLocalStorage(){
 function deleteItemFromLocalStore(item)
 {
     const onGotArray = function(received_object){
+        
 
-        let updated_array = []
-
-        for(let i=0; i<received_object.array.length; i++){   
-
-            let array_item = received_object.array[i]
-
-            if(item.value !== array_item.value)//maybe should also compare by conversation id?
-                updated_array.push(array_item)
-        }
+        const updated_array = removeFromMessagesArray(received_object.array,item)
 
         received_object.array = updated_array
         browser.storage.local.set(received_object)
@@ -381,6 +375,20 @@ function deleteItemFromLocalStore(item)
 
     const gettingItem = browser.storage.local.get()
     gettingItem.then(onGotArray, onError)
+}
+
+function removeFromMessagesArray(array,item) {
+
+    let updated_array = []
+
+        for(let i=0; i<array.length; i++){   
+
+            let array_item = array[i]
+
+            if(item.value !== array_item.value)//maybe should also compare by conversation id?
+                updated_array.push(array_item)
+        }
+    return updated_array
 }
 
 
