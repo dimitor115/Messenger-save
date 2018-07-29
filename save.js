@@ -258,21 +258,24 @@ function addSaveButtonToAllMessages(whole_messages_dives)
                 button.role="button"
 
                 const messageObject = { "value": message_text, "date":0, "conversation_id":current_conversation_id }
-                //console.log(message_text)
-                //console.log(existInSavedMessages(messageObject))
-                if(!existInSavedMessages(messageObject))
-                    button.innerHTML = SAVE_MESSAGE_BUTTON_HTML()
-                else
-                    button.innerHTML = SAVE_MESSAGE_BUTTON_HTML("#565c66")
-         
                 
-                // button.innerHTML = SAVE_MESSAGE_BUTTON_HTML()
-                
+                const setButtonColor = () => {
+                    console.log(existInSavedMessages(messageObject))
+                    if(!existInSavedMessages(messageObject))
+                        button.innerHTML = SAVE_MESSAGE_BUTTON_HTML()
+                    else
+                        button.innerHTML = SAVE_MESSAGE_BUTTON_HTML("#565c66")
+                }
+
+                setButtonColor()
+
                 button.setAttribute("value",message_text) //sets the value of the button to the message content
                 button.onclick = function(){
 
                     console.log(message_text)
-                    addItemToLocalStorage(messageObject)
+                    saveThisMessage(messageObject)
+
+                    setButtonColor()
 
                     //TODO : It will be cool to check now if the message is already saved of not, and show the right button
                 }
@@ -288,7 +291,9 @@ function addSaveButtonToAllMessages(whole_messages_dives)
                     
                     was_message_options_render = false
                     messages_option_span.removeChild(button)
-                } 
+                }
+
+               
             }
             
         }
@@ -299,10 +304,12 @@ function saveThisMessage(message_object)
 {
     if(existInSavedMessages(message_object))
     {
-        deleteItemFromLocalStore(message_object);
+        deleteItemFromLocalStore(message_object)
     }else{
-        addItemToLocalStorage(message_object);
+        addItemToLocalStorage(message_object)
+        saved_messages_list.push(message_object)
     }
+
 }
 
 
@@ -369,6 +376,7 @@ function deleteItemFromLocalStore(item)
 
         received_object.array = updated_array
         browser.storage.local.set(received_object)
+
     }
 
     const gettingItem = browser.storage.local.get()
