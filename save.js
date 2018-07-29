@@ -195,10 +195,15 @@ function generatePinsList(pinArray,text_div){
             pinButton.innerHTML = message_text
             pinButton.style = SAVED_MESSAGES_STYLE
 
-            pinButton.onclick = function(){
+            pinButton.ondblclick = () => {
 
                 url = window.location.href + "?q=" + pin.value
                 window.location.href = url //that reload page with searching on choose massage text
+            }
+
+            pinButton.onclick = function(){
+                pinButton.innerHTML = pin.value
+                pinButton.style.padding = "0px 12px"
             }
 
             const li_element = document.createElement("li")
