@@ -16,9 +16,10 @@ const SHOW_BOX = '<div class="_3ixn"></div><div class="_59s7" role="dialog" aria
 const ADD_PIN_BUTTON_STYLES = 'background-color: #ECEFF1; border-radius: 5px; border: 1px;'
 
 //---global variables---
-var current_conversation_id =null;
-var number_of_messages_dives = 0;
-var was_message_options_render = false;
+let current_conversation_id =null;
+let number_of_messages_dives = 0;
+let was_message_options_render = false;
+let saved_messages_list = []
 
 start()
 
@@ -29,6 +30,8 @@ function start()
     let was_pins_saved_button_added = false
 
     prepareLocalStorage()
+
+    getAllSavedMessages()
 
     let update_current_conversation_id = function(){
 
@@ -84,13 +87,13 @@ function updateConversationColor()
     const RIGHT_ICONS_CLASS_NAME = "_5odt"
 
     let right_icons_dives = document.getElementsByClassName(RIGHT_ICONS_CLASS_NAME)
-    console.log(right_icons_dives)
+  
     if(right_icons_dives.length>0){
 
         let svg_element = right_icons_dives[0].childNodes[0]
         let circle_element = svg_element.childNodes[1] // because at 0 index is title tag
         
-        console.log(circle_element)
+     
 
         let conversation_color = circle_element.getAttribute("fill")
         SAVED_PINS_BUTTON_PIN_SVG_COLOR = conversation_color
@@ -230,7 +233,7 @@ function addSaveButtonToAllMessages(whole_messages_dives)
 
     let whole_messages_box_dives = document.getElementsByClassName("_1t_p clearfix")
 
-    console.log(`${whole_messages_dives.length} : ${whole_messages_box_dives.length}`)
+  
     let messages_option_spans = document.getElementsByClassName(MESSAGE_OPTION_SPAN_CLASS)
 
     for(let i=0; i<whole_messages_dives.length; i++){
@@ -253,14 +256,22 @@ function addSaveButtonToAllMessages(whole_messages_dives)
 
                 let button = document.createElement("span")
                 button.role="button"
-                button.innerHTML = SAVE_MESSAGE_BUTTON_HTML()
-                //button.style = ADD_PIN_BUTTON_STYLES;
+
+                const messageObject = { "value": message_text, "date":0, "conversation_id":current_conversation_id }
+                //console.log(message_text)
+                //console.log(existInSavedMessages(messageObject))
+                if(!existInSavedMessages(messageObject))
+                    button.innerHTML = SAVE_MESSAGE_BUTTON_HTML()
+                else
+                    button.innerHTML = SAVE_MESSAGE_BUTTON_HTML("#565c66")
+         
+                
+                // button.innerHTML = SAVE_MESSAGE_BUTTON_HTML()
                 
                 button.setAttribute("value",message_text) //sets the value of the button to the message content
                 button.onclick = function(){
 
                     console.log(message_text)
-                    let messageObject = { "value": message_text, "date":0, "conversation_id":current_conversation_id }
                     addItemToLocalStorage(messageObject)
 
                     //TODO : It will be cool to check now if the message is already saved of not, and show the right button
@@ -284,21 +295,45 @@ function addSaveButtonToAllMessages(whole_messages_dives)
     }
 }
 
+function saveThisMessage(message_object)
+{
+    if(existInSavedMessages(message_object))
+    {
+        deleteItemFromLocalStore(message_object);
+    }else{
+        addItemToLocalStorage(message_object);
+    }
+}
+
 
 function getMessageDate(whole_message_div){
     //TODO : Implement it !
 }
 
+function existInSavedMessages(item)
+{
+
+    for(let i=0; i<saved_messages_list.length; i++)
+    {
+        const array_item = saved_messages_list[i];
+            if(item.value === array_item.value && item.conversation_id === array_item.conversation_id)
+                return true;
+    }
+    return false;
+}
+
 
 // ------ MEMORY ------- 
-function getItemsFromLocalStorageById() //??? xd
-{
-      let onGotArray = function(received_object){
-        
-        }
 
-    let gettingItem = browser.storage.local.get()
-    gettingItem.then(onGotArray, onError)
+function getAllSavedMessages(){
+
+    browser.storage.local.get()
+    .then(
+        received_object=>{
+            saved_messages_list = received_object.array
+        },
+        onError
+    )
 }
 
 function prepareLocalStorage(){
